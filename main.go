@@ -63,6 +63,7 @@ func main() {
 	}
 	logging.Init()                                                                                    // 初始化日志
 	logging.Infof("上游媒体服务器类型：%s，服务器地址：%s", config.MediaServer.Type.String(), config.MediaServer.ADDR) // 日志打印
+	logging.Infof("当前为魔改版本")
 	service.InitAlistSerer()                                                                          // 初始化Alist服务器
 	if err := handler.Init(); err != nil {                                                            // 初始化媒体服务器处理器
 		logging.Error("媒体服务器处理器初始化失败：", err)
