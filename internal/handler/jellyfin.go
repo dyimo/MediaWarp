@@ -90,6 +90,7 @@ func (jellyfinHandler *JellyfinHandler) ModifyPlaybackInfo(rw *http.Response) er
 		return err
 	}
 
+    logging.Infof("body :%s", data)
 	var playbackInfoResponse jellyfin.PlaybackInfoResponse
 	if err = json.Unmarshal(data, &playbackInfoResponse); err != nil {
 		logging.Warning("解析 jellyfin.PlaybackInfoResponse JSON 错误：", err)
@@ -172,7 +173,7 @@ func (jellyfinHandler *JellyfinHandler) ModifyPlaybackInfo(rw *http.Response) er
 		logging.Warning("序列化 jellyfin.PlaybackInfoResponse Json 错误：", err)
 		return err
 	}
-    logging.Infof("playbackInfoResponse data: %s", data)
+    logging.Infof("playbackInfoResponse data: %s", playbackInfoResponse)
 
 	rw.Header.Set("Content-Type", "application/json") // 更新 Content-Type 头
 	return updateBody(rw, data)
