@@ -110,7 +110,7 @@ func updateBody(rw *http.Response, content []byte) error {
 	encoding := rw.Header.Get("Content-Encoding")
 	var (
 		compressed bytes.Buffer
-		writer     io.Writer
+		writer     io.Writer = &compressed
 	)
 
 	// 根据原始编码选择压缩方式
@@ -118,35 +118,43 @@ func updateBody(rw *http.Response, content []byte) error {
 	case "gzip":
 		logging.Debug("使用 GZIP 重新编码数据")
 		gw := gzip.NewWriter(&compressed)
-		defer gw.Close()
-		writer = gw
+
+		if _, err := gw.Write(content); err != nil {
+		    return err
+	    }
+
+        if err := gw.Close(); err != nil { // 必须立即关闭
+            return err
+        }
 
 	case "br":
 		logging.Debug("使用 Brotli 重新编码数据")
 		bw := brotli.NewWriter(&compressed)
-		defer bw.Close()
-		writer = bw
+
+		if _, err := bw.Write(content); err != nil {
+		    return err
+	    }
+
+        if err := bw.Flush(); err != nil { // 必须立即关闭
+            return err
+        }
+		bw.Close()
 
 	case "": // 无压缩
 		logging.Debug("无压缩数据")
-		writer = &compressed
 		rw.Header.Del("Content-Encoding")
+		if _, err := writer.Write(content); err != nil {
+		    return err
+	    }
 
 	default:
 		logging.Warningf("不支持的重新编码：%s，将不对数据进行压缩编码", encoding)
 		rw.Header.Del("Content-Encoding")
+		if _, err := writer.Write(content); err != nil {
+		    return err
+	    }
 	}
 
-	if _, err := writer.Write(content); err != nil {
-		return fmt.Errorf("compression write error: %w", err)
-	}
-
-	// Brotli 需要显式 Flush
-	if bw, ok := writer.(*brotli.Writer); ok {
-		if err := bw.Flush(); err != nil {
-			return err
-		}
-	}
 
 	// 设置新 Body
 	rw.Body = io.NopCloser(bytes.NewReader(compressed.Bytes()))

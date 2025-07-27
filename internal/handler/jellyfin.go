@@ -90,6 +90,7 @@ func (jellyfinHandler *JellyfinHandler) ModifyPlaybackInfo(rw *http.Response) er
 		return err
 	}
 
+    logging.Infof("head :%s", rw.Header)
     logging.Infof("body :%s", data)
 	var playbackInfoResponse jellyfin.PlaybackInfoResponse
 	if err = json.Unmarshal(data, &playbackInfoResponse); err != nil {
