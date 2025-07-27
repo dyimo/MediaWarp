@@ -130,6 +130,7 @@ func updateBody(rw *http.Response, content []byte) error {
 	case "": // 无压缩
 		logging.Debug("无压缩数据")
 		writer = &compressed
+		rw.Header.Del("Content-Encoding")
 
 	default:
 		logging.Warningf("不支持的重新编码：%s，将不对数据进行压缩编码", encoding)
