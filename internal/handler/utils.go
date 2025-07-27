@@ -68,7 +68,7 @@ func recgonizeStrmFileType(strmFilePath string) (constants.StrmFileType, any) {
 			}
 		}
 	}
-	logging.Debugf("%s 未匹配任何路径，Strm 类型：%s", strmFilePath, constants.UnknownStrm)
+	logging.Infof("%s 未匹配任何路径，Strm 类型：%s", strmFilePath, constants.UnknownStrm)
 	return constants.UnknownStrm, nil
 }
 
