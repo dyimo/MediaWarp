@@ -172,6 +172,7 @@ func (jellyfinHandler *JellyfinHandler) ModifyPlaybackInfo(rw *http.Response) er
 		logging.Warning("序列化 jellyfin.PlaybackInfoResponse Json 错误：", err)
 		return err
 	}
+    logging.Infof("playbackInfoResponse data: %s", data)
 
 	rw.Header.Set("Content-Type", "application/json") // 更新 Content-Type 头
 	return updateBody(rw, data)
