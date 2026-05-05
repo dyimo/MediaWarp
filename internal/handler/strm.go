@@ -13,6 +13,7 @@ import (
 	"github.com/AkimioJR/MediaWarp/internal/logging"
 	"github.com/AkimioJR/MediaWarp/internal/service"
 	"github.com/AkimioJR/MediaWarp/internal/service/alist"
+	"github.com/AkimioJR/MediaWarp/utils"
 
 	"github.com/allegro/bigcache/v3"
 )
@@ -23,7 +24,7 @@ func getHTTPStrmHandler() (StrmHandlerFunc, error) {
 	var cache *bigcache.BigCache
 	if config.Cache.Enable && config.Cache.HTTPStrmTTL > 0 && config.HTTPStrm.FinalURL {
 		var err error
-		cache, err = bigcache.New(context.Background(), bigcache.DefaultConfig(config.Cache.HTTPStrmTTL))
+		cache, err = utils.NewCache(config.Cache.HTTPStrmTTL)
 		if err != nil {
 			return nil, fmt.Errorf("创建 HTTPStrm 缓存失败: %w", err)
 		}

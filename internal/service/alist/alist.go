@@ -59,7 +59,7 @@ func New(addr string, username string, password string, token *string) (*Client,
 	}
 
 	if config.Cache.Enable && config.Cache.AlistAPITTL > 0 {
-		cache, err := bigcache.New(context.Background(), bigcache.DefaultConfig(config.Cache.AlistAPITTL))
+		cache, err := utils.NewCache(config.Cache.AlistAPITTL)
 		if err == nil {
 			client.cache = cache
 		} else {
