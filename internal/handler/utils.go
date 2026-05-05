@@ -153,8 +153,10 @@ func getFinalURL(client *http.Client, rawURL string, ua string) (string, error) 
 		}
 
 		// 返回最终的非重定向URL
+		finalURL := resp.Request.URL.String()
+		logging.Infof("HTTPStrm 最终地址映射: %s -> %s", rawURL, finalURL)
 		logging.Debug("重定向链：", strings.Join(redirectChain, " -> "))
-		return resp.Request.URL.String(), nil
+		return finalURL, nil
 	}
 
 	return "", ErrMaxRedirectsExceeded
