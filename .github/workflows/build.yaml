@@ -22,6 +22,7 @@ jobs:
     env:
       IS_RELEASE: ${{ startsWith(github.ref, 'refs/tags/') }}
       PRE_RELEASE_TAG: pre-release
+      DOCKER_IMAGE_NAME: ${{ github.repository | lower }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -116,11 +117,11 @@ jobs:
           done
 
           docker buildx imagetools create \
-            -t "akimio/mediawarp:${{ steps.prerelease_meta.outputs.version }}" \
+            -t "${DOCKER_IMAGE_NAME}:${{ steps.prerelease_meta.outputs.version }}" \
             "${image_refs[@]}"
 
           docker buildx imagetools create \
-            -t "akimio/mediawarp:prerelease-latest" \
+            -t "${DOCKER_IMAGE_NAME}:prerelease-latest" \
             "${image_refs[@]}"
 
       - name: Cleanup existing pre-releases

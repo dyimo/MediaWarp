@@ -60,7 +60,7 @@ dockers_v2:
       - static
       - utils
     images:
-      - akimio/mediawarp
+      - "{{ .Env.DOCKER_IMAGE_NAME }}"
     tags:
       - "{{ .Version }}"
       - "{{ if not .IsSnapshot }}latest{{ end }}"
