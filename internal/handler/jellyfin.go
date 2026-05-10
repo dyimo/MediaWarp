@@ -122,6 +122,17 @@ func (handler *JellyfinHandler) ModifyPlaybackInfo(rw *http.Response) error {
 		return err
 	}
 
+	// 从原始请求中提取 API Key，用于构造 DirectStreamUrl
+	var apiKeyPair string
+	if rw.Request != nil {
+		query := rw.Request.URL.Query()
+		if key := query.Get("api_key"); key != "" {
+			apiKeyPair = "api_key=" + key
+		} else if token := query.Get("X-Emby-Token"); token != "" {
+			apiKeyPair = "X-Emby-Token=" + token
+		}
+	}
+
 	for index, mediasource := range playbackInfoResponse.MediaSources {
 		startTime := time.Now()
 		logging.Debug("请求 ItemsServiceQueryItem：" + *mediasource.ID)
@@ -135,12 +146,21 @@ func (handler *JellyfinHandler) ModifyPlaybackInfo(rw *http.Response) error {
 		bsePath := "MediaSources." + strconv.Itoa(index) + "."
 		switch strmFileType {
 		case constants.HTTPStrm: // HTTPStrm 设置支持直链播放并且支持转码
+			directStreamURL := mediasource.DirectStreamURL
+			if directStreamURL == nil {
+				apiKeySuffix := apiKeyPair
+				if apiKeySuffix != "" {
+					apiKeySuffix = "&" + apiKeySuffix
+				}
+				defaultURL := fmt.Sprintf("/Videos/%s/stream?MediaSourceId=%s&Static=true%s", *mediasource.ID, *mediasource.ID, apiKeySuffix)
+				directStreamURL = &defaultURL
+			}
 			processHTTPStrmPlaybackInfo(
 				jsonChain,
 				bsePath,
 				*mediasource.ID,
 				*mediasource.ID,
-				mediasource.DirectStreamURL,
+				directStreamURL,
 			)
 
 		case constants.AlistStrm: // AlistStm 设置支持直链播放并且禁止转码
