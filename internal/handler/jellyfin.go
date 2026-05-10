@@ -203,10 +203,8 @@ func (handler *JellyfinHandler) VideosHandler(ctx *gin.Context) {
 		if *mediasource.ID == mediaSourceID { // EmbyServer >= 4.9 返回的ID带有前缀mediasource_
 			switch strmFileType {
 			case constants.HTTPStrm:
-				if *mediasource.Protocol == jellyfin.HTTP {
-					ctx.Redirect(http.StatusFound, handler.httpStrmHandler(*mediasource.Path, ctx.Request.UserAgent()))
-					return
-				}
+				ctx.Redirect(http.StatusFound, handler.httpStrmHandler(*mediasource.Path, ctx.Request.UserAgent()))
+				return
 
 			case constants.AlistStrm: // 无需判断 *mediasource.Container 是否以Strm结尾，当 AlistStrm 存储的位置有对应的文件时，*mediasource.Container 会被设置为文件后缀
 				res, err := alistStrmHandler(*mediasource.Path, opt.(string), false)
