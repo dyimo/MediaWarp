@@ -58,19 +58,19 @@ type JellyfinRegexps struct {
 
 var JellyfinRegexp = &JellyfinRegexps{
 	Router: JellyfinRouterRegexps{
-		VideosHandler:      regexp.MustCompile(`/Videos/[\w-]+/(stream|original)(\.\w+)?$`), // /Videos/813a630bcf9c3f693a2ec8c498f868d2/stream /Videos/205953b114bb8c9dc2c7ba7e44b8024c/stream.mp4
+		VideosHandler:      regexp.MustCompile(`(?i)^(/emby)?/Videos/[\w-]+/(stream|original)(\.\w+)?$`), // /Videos/813a630bcf9c3f693a2ec8c498f868d2/stream /Videos/205953b114bb8c9dc2c7ba7e44b8024c/stream.mp4
 		ModifyIndex:        regexp.MustCompile(`^/web/$`),
-		ModifyPlaybackInfo: regexp.MustCompile(`^/Items/\w+/PlaybackInfo$`),
-		ModifySubtitles:    regexp.MustCompile(`/Videos/\d+/\w+/subtitles$`),
+		ModifyPlaybackInfo: regexp.MustCompile(`(?i)^(/emby)?/Items/\w+/PlaybackInfo$`),
+		ModifySubtitles:    regexp.MustCompile(`(?i)^(/emby)?/Videos/\d+/\w+/subtitles$`),
 	},
 	Cache: CacheRegexps{
 		// /Items/19ba9e43f0db12e2eea4294609ec1a0c/Images/Primary
 		// /Items/20524938b33d516922ccea207555315b/Images/Backdrop/0
 		// /Items/abc123/Images/Chapter/0
-		Image: regexp.MustCompile(`(?i)/Items/\w+/Images(/.*)?$`),
+		Image: regexp.MustCompile(`(?i)^(/emby)?/Items/\w+/Images(/.*)?$`),
 
 		// /Videos/6c252d46-952c-5b0d-5f0e-f6e3036c0a39/6c252d46952c5b0d5f0ef6e3036c0a39/Subtitles/2/0/Stream.ass
-		Subtitle: regexp.MustCompile(`(?i)/Videos/(.*)/Subtitles/(.*)/Stream\.(ass|ssa|srt|)?$`),
+		Subtitle: regexp.MustCompile(`(?i)^(/emby)?/Videos/(.*)/Subtitles/(.*)/Stream\.(ass|ssa|srt|)?$`),
 	},
 }
 
