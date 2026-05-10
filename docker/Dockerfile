@@ -10,7 +10,7 @@ ENV GO111MODULE=on \
 WORKDIR /builder
 COPY . .
 RUN go mod download && \
-    go build -ldflags " \
+    CGO_ENABLED=0 go build -ldflags " \
     -s -w \
     -X github.com/AkimioJR/MediaWarp/internal/config.appVersion=${APP_VERSION} \
     -X github.com/AkimioJR/MediaWarp/internal/config.commitHash=${COMMIT_HASH} \
